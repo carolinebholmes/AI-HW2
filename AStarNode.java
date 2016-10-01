@@ -35,5 +35,14 @@ public class AStarNode {
         if (o instanceof AStarNode) return this.getFValue() - o.getFValue();
         else return Super.compareTo(o);
     }
+    public boolean equals(Object o){
+        if (o instanceof AStarNode){
+            if (this.point.equals(o.point())) return true;
+            else return false;
+        }
+        else{
+            return false;
+        }
+    }
 
 }
