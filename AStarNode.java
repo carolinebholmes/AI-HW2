@@ -1,8 +1,6 @@
 import java.awt.*;
 
-/**
- * Created by student on 10/1/2016.
- */
+
 public class AStarNode {
 
     public Point point;
@@ -14,6 +12,7 @@ public class AStarNode {
     public AStarNode(Point point, boolean isValid) {
         this.point = point;
         this.isValid = isValid;
+        this.gValue = Integer.MAX_VALUE;
     }
 
     public void setGValue(int amount) {
