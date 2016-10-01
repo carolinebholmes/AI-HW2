@@ -46,25 +46,20 @@ public class MyRobot extends Robot {
         }
     }
 
-    public int[][] generateGraph(){
+    public AStarNode[][] generateGraph(){
         if(this.world != null){
             int numCols = this.world.numCols();
             int numRows = this.world.numRows();
-            int[][] graph = new int[numCols * numRows][numCols * numRows];
+            Point goalPoint = this.world.getEndPos();
+            Point startPoint = this.world.getStartPos();
+            AStarNode[][] graph = new AStarNode[numRows][numCols];
             for(int r = 0; r < this.world.numRows(); r++){
                 for(int c = 0; c < this.world.numCols(); c++){
                     String currTile = pingMap(new Point(c, r));
-
-                    if(Pattern.matches("[OFS]{1}", currTile)){
-                        if(Pattern.matches("[OFS]{1}", pingMap(new Point(c - 1, r))))
-                            graph[r * numCols + c][r * numCols + c - 1] = 1;
-                        if(Pattern.matches("[OFS]{1}", pingMap(new Point(c + 1, r))))
-                            graph[r * numCols + c][r * numCols + c + 1] = 1;
-                        if(Pattern.matches("[OFS]{1}", pingMap(new Point(c, r-1))))
-                            graph[r * numCols + c][(r-1) * numCols + c] = 1;
-                        if(Pattern.matches("[OFS]{1}", pingMap(new Point(c, r+1))))
-                            graph[r * numCols + c][(r+1) * numCols + c] = 1;
-                    }
+                    AStarNode anode = new AStarNode(new Point(c,r),Pattern.matches("[OFS]{1}", currTile));
+                    anode.calculateHValue(goalPoint);
+                    if(anode.point.equals(startPoint)) anode.setGValue(0);
+                    graph[r][c] = anode;
                 }
             }
             return graph;
