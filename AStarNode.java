@@ -30,4 +30,10 @@ public class AStarNode {
     public int getFValue() {
         return this.gValue + this.hValue;
     }
+
+    public int compareTo(Object o) {
+        if (o instanceof AStarNode) return this.getFValue() - o.getFValue();
+        else return Super.compareTo(o);
+    }
+
 }
