@@ -29,7 +29,7 @@ public class MyRobot extends Robot {
         super.addToWorld(world);
     }
 
-    public Point[] aStarSearch(){
+    public ArrayList<Point> aStarSearch(){
         AStarNode[][] grid = generateGraph();
         AStarNode start = grid[this.world.getStartPos().y][this.world.getStartPos().x];
         AStarNode end = grid[this.world.getEndPos().y][this.world.getEndPos().x];
@@ -39,7 +39,7 @@ public class MyRobot extends Robot {
         while(openSet.size() > 0){
             AStarNode current = openSet.poll();
             if(current.equals(end)){
-                //backtrack (Reconstruct path method?)
+                return this.retraceSteps(end);
             }
             closedSet.add(current);
             ArrayList<AStarNode> neighbors = current.getNeighbors(grid);
@@ -48,12 +48,32 @@ public class MyRobot extends Robot {
                     continue;
                 }
                 int neighborG = current.gValue + 1;
-                
-
+                if(!openSet.contains(neighbor))
+                    openSet.add(neighbor);
+                else if(neighborG >= neighbor.gValue)
+                    continue;
+                //if at this point, this path is the best until now
+                neighbor.prevNode = current;
+                neighbor.gValue = neighborG;
             }
 
         }
+        return new ArrayList<Point>();
+    }
 
+    public ArrayList<Point> retraceSteps(AStarNode end){
+        AStarNode curr = end;
+        Stack<AStarNode> rstack = new Stack<>();
+        rstack.push(curr);
+        while(curr.prevNode != null){
+            curr = curr.prevNode;
+            rstack.push(curr);
+        }
+        ArrayList<Point> path = new ArrayList<>();
+        while(!rstack.empty()){
+            path.add(rstack.pop().point);
+        }
+        return path;
     }
 
 
