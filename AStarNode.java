@@ -2,7 +2,7 @@ import java.awt.*;
 import java.util.ArrayList;
 
 
-public class AStarNode {
+public class AStarNode implements Comparable<AStarNode>{
 
     public Point point;
     public AStarNode prevNode;
@@ -32,13 +32,10 @@ public class AStarNode {
         return this.gValue + this.hValue;
     }
 
-    public int compareTo(Object o) {
-        if(o instanceof AStarNode) {
-            return this.getFValue() - ((AStarNode) o).getFValue();
-        }
-        else
-            return -1; //This doesn't really make sense in the context of compareTo, we can probably work a simpler solution
+    public int compareTo(AStarNode a) {
+        return this.getFValue() - a.getFValue();
     }
+
     public boolean equals(Object o){
         if (o instanceof AStarNode){
             if (this.point.equals(((AStarNode)o).point)) return true;
@@ -51,10 +48,12 @@ public class AStarNode {
 
     public ArrayList<AStarNode> getNeighbors(AStarNode[][] grid){
         ArrayList<AStarNode> nbrs = new ArrayList<>();
-        if(grid[this.point.y+1][this.point.x].isValid) nbrs.add(grid[this.point.y+1][this.point.x]);
-        if(grid[this.point.y-1][this.point.x].isValid) nbrs.add(grid[this.point.y-1][this.point.x]);
-        if(grid[this.point.y][this.point.x+1].isValid) nbrs.add(grid[this.point.y][this.point.x+1]);
-        if(grid[this.point.y][this.point.x-1].isValid) nbrs.add(grid[this.point.y][this.point.x-1]);
+        int x = this.point.x;
+        int y = this.point.y;
+        if(x+1 < grid.length && grid[x+1][y].isValid) nbrs.add(grid[x+1][y]);
+        if(x-1 >= 0 && grid[x-1][y].isValid) nbrs.add(grid[x-1][y]);
+        if(y+1 < grid[0].length && grid[x][y+1].isValid) nbrs.add(grid[x][y+1]);
+        if(y-1 >= 0 && grid[x][y-1].isValid) nbrs.add(grid[x][y-1]);
         return nbrs;
     }
 

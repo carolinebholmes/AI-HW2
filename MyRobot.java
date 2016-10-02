@@ -16,9 +16,14 @@ public class MyRobot extends Robot {
     public void travelToDestination() {
         if (isUncertain) {
 			// call function to deal with uncertainty
+            System.out.println("uncertain");
         }
         else {
-			// call function to deal with certainty
+			ArrayList<Point> path = aStarSearch();
+            System.out.println(path);
+            for(Point tile : path){
+                this.move(tile);
+            }
         }
     }
 
@@ -31,8 +36,8 @@ public class MyRobot extends Robot {
 
     public ArrayList<Point> aStarSearch(){
         AStarNode[][] grid = generateGraph();
-        AStarNode start = grid[this.world.getStartPos().y][this.world.getStartPos().x];
-        AStarNode end = grid[this.world.getEndPos().y][this.world.getEndPos().x];
+        AStarNode start = grid[this.world.getStartPos().x][this.world.getStartPos().y];
+        AStarNode end = grid[this.world.getEndPos().x][this.world.getEndPos().y];
         PriorityQueue<AStarNode> openSet = new PriorityQueue<AStarNode>();
         Set<AStarNode> closedSet = new TreeSet<AStarNode>();
         openSet.add(start);
@@ -79,11 +84,12 @@ public class MyRobot extends Robot {
 
     public static void main(String[] args) {
         try {
-			World myWorld = new World("TestCases/myInputFile1.txt", true);
+			World myWorld = new World("TestCases/myInputFile1.txt", false);
             MyRobot robot = new MyRobot();
             robot.addToWorld(myWorld);
-			//myWorld.createGUI(400, 400, 200); // uncomment this and create a GUI; the last parameter is delay in msecs
-			robot.travelToDestination();
+			myWorld.createGUI(400, 400, 200); // uncomment this and create a GUI; the last parameter is delay in msecs
+			System.out.println(myWorld.getEndPos() + "   " + myWorld.getStartPos());
+            robot.travelToDestination();
         }
 
         catch (Exception e) {
