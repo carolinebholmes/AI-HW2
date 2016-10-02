@@ -1,4 +1,5 @@
 import java.awt.*;
+import java.util.ArrayList;
 
 
 public class AStarNode {
@@ -32,17 +33,29 @@ public class AStarNode {
     }
 
     public int compareTo(Object o) {
-        if (o instanceof AStarNode) return this.getFValue() - o.getFValue();
-        else return Super.compareTo(o);
+        if(o instanceof AStarNode) {
+            return this.getFValue() - ((AStarNode) o).getFValue();
+        }
+        else
+            return -1; //This doesn't really make sense in the context of compareTo, we can probably work a simpler solution
     }
     public boolean equals(Object o){
         if (o instanceof AStarNode){
-            if (this.point.equals(o.point())) return true;
+            if (this.point.equals(((AStarNode)o).point)) return true;
             else return false;
         }
         else{
             return false;
         }
+    }
+
+    public ArrayList<AStarNode> getNeighbors(AStarNode[][] grid){
+        ArrayList<AStarNode> nbrs = new ArrayList<>();
+        if(grid[this.point.y+1][this.point.x].isValid) nbrs.add(grid[this.point.y+1][this.point.x]);
+        if(grid[this.point.y-1][this.point.x].isValid) nbrs.add(grid[this.point.y-1][this.point.x]);
+        if(grid[this.point.y][this.point.x+1].isValid) nbrs.add(grid[this.point.y][this.point.x+1]);
+        if(grid[this.point.y][this.point.x-1].isValid) nbrs.add(grid[this.point.y][this.point.x-1]);
+        return nbrs;
     }
 
 }

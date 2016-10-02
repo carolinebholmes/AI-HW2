@@ -31,31 +31,26 @@ public class MyRobot extends Robot {
 
     public Point[] aStarSearch(){
         AStarNode[][] grid = generateGraph();
-        AStarNode start = grid[this.world.getStartPos.getY()][this.word.getStartPos.getX()];
-        AStarNode end = grid[this.world.getEndPos.getY()][this.world.getEndPos.getX()]
-        PriorityQueue<AStarNode> openSet = new PriorityQueue<aStarNode>();
-        Set<AStarNode> closedSet = new Set<AStarNode>();
+        AStarNode start = grid[this.world.getStartPos().y][this.world.getStartPos().x];
+        AStarNode end = grid[this.world.getEndPos().y][this.world.getEndPos().x];
+        PriorityQueue<AStarNode> openSet = new PriorityQueue<AStarNode>();
+        Set<AStarNode> closedSet = new TreeSet<AStarNode>();
         openSet.add(start);
         while(openSet.size() > 0){
-            current = openSet.poll();
+            AStarNode current = openSet.poll();
             if(current.equals(end)){
                 //backtrack (Reconstruct path method?)
             }
             closedSet.add(current);
-            if(closedSet.contains(grid[current.print.getY()+1][current.print.getX()]){
+            ArrayList<AStarNode> neighbors = current.getNeighbors(grid);
+            for (AStarNode neighbor : neighbors) {
+                if (closedSet.contains(neighbor)) {
+                    continue;
+                }
+                int neighborG = current.gValue + 1;
+                
 
             }
-            if(closedSet.contains(grid[current.print.getY()-1][current.print.getX()]){
-
-            }
-            if(closedSet.contains(grid[current.print.getY()][current.print.getX()+1]){
-
-            }
-            if(closedSet.contains(grid[current.print.getY()][current.print.getX()-1]){
-
-            }
-
-
 
         }
 
@@ -85,8 +80,8 @@ public class MyRobot extends Robot {
             AStarNode[][] graph = new AStarNode[numRows][numCols];
             for(int r = 0; r < this.world.numRows(); r++){
                 for(int c = 0; c < this.world.numCols(); c++){
-                    String currTile = pingMap(new Point(c, r));
-                    AStarNode anode = new AStarNode(new Point(c,r),Pattern.matches("[OFS]{1}", currTile));
+                    String currTile = pingMap(new Point(r, c));
+                    AStarNode anode = new AStarNode(new Point(r,c),Pattern.matches("[OFS]{1}", currTile));
                     anode.calculateHValue(goalPoint);
                     if(anode.point.equals(startPoint)) anode.setGValue(0);
                     graph[r][c] = anode;
