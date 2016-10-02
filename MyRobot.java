@@ -21,6 +21,9 @@ public class MyRobot extends Robot {
         else {
 			ArrayList<Point> path = aStarSearch();
             System.out.println(path);
+            if(path.size() == 0) {
+                System.out.println("There is no valid path on the board.");
+            }
             for(Point tile : path){
                 this.move(tile);
             }
@@ -78,23 +81,8 @@ public class MyRobot extends Robot {
         while(!rstack.empty()){
             path.add(rstack.pop().point);
         }
+        path.remove(0);
         return path;
-    }
-
-
-    public static void main(String[] args) {
-        try {
-			World myWorld = new World("TestCases/myInputFile1.txt", false);
-            MyRobot robot = new MyRobot();
-            robot.addToWorld(myWorld);
-			myWorld.createGUI(400, 400, 200); // uncomment this and create a GUI; the last parameter is delay in msecs
-			System.out.println(myWorld.getEndPos() + "   " + myWorld.getStartPos());
-            robot.travelToDestination();
-        }
-
-        catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     private AStarNode[][] generateGraph(){
@@ -117,4 +105,20 @@ public class MyRobot extends Robot {
         }else
             return null;
     }
+
+    public static void main(String[] args) {
+        try {
+			World myWorld = new World("TestCases/myInputFile4.txt", false);
+            MyRobot robot = new MyRobot();
+            robot.addToWorld(myWorld);
+			myWorld.createGUI(400, 400, 200); // uncomment this and create a GUI; the last parameter is delay in msecs
+			robot.travelToDestination();
+        }
+
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
 }
