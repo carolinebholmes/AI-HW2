@@ -29,15 +29,45 @@ public class MyRobot extends Robot {
         super.addToWorld(world);
     }
 
+    public Point[] aStarSearch(){
+        AStarNode[][] grid = generateGraph();
+        AStarNode start = grid[this.world.getStartPos.getY()][this.word.getStartPos.getX()];
+        AStarNode end = grid[this.world.getEndPos.getY()][this.world.getEndPos.getX()]
+        PriorityQueue<AStarNode> openSet = new PriorityQueue<aStarNode>();
+        Set<AStarNode> closedSet = new Set<AStarNode>();
+        openSet.add(start);
+        while(openSet.size() > 0){
+            current = openSet.poll();
+            if(current.equals(end)){
+                //backtrack (Reconstruct path method?)
+            }
+            closedSet.add(current);
+            if(closedSet.contains(grid[current.print.getY()+1][current.print.getX()]){
+
+            }
+            if(closedSet.contains(grid[current.print.getY()-1][current.print.getX()]){
+
+            }
+            if(closedSet.contains(grid[current.print.getY()][current.print.getX()+1]){
+
+            }
+            if(closedSet.contains(grid[current.print.getY()][current.print.getX()-1]){
+
+            }
+
+
+
+        }
+
+    }
+
+
     public static void main(String[] args) {
         try {
 			World myWorld = new World("TestCases/myInputFile1.txt", true);
-			
             MyRobot robot = new MyRobot();
             robot.addToWorld(myWorld);
 			//myWorld.createGUI(400, 400, 200); // uncomment this and create a GUI; the last parameter is delay in msecs
-			
-
 			robot.travelToDestination();
         }
 
@@ -46,7 +76,7 @@ public class MyRobot extends Robot {
         }
     }
 
-    public AStarNode[][] generateGraph(){
+    private AStarNode[][] generateGraph(){
         if(this.world != null){
             int numCols = this.world.numCols();
             int numRows = this.world.numRows();
