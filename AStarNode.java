@@ -58,6 +58,7 @@ public class AStarNode implements Comparable<AStarNode>{
         if(x+1 < grid.length && y-1 >=0 && grid[x+1][y-1].isValid) nbrs.add(grid[x+1][y-1]);
         if(x-1 >= 0 && y+1 < grid[0].length && grid[x-1][y+1].isValid) nbrs.add(grid[x-1][y+1]);
         if(x-1 >= 0 && y-1 >= 0 && grid[x-1][y-1].isValid) nbrs.add(grid[x-1][y-1]);
+
         return nbrs;
     }
 

@@ -16,10 +16,19 @@ public class MyRobot extends Robot {
     public void travelToDestination() {
         if (isUncertain) {
 			// call function to deal with uncertainty
-            System.out.println("uncertain");
+            AStarNode[][] grid;
+            ArrayList<Point> path;
+            do {
+                grid = probGenGraph();
+                path = aStarSearch(grid);
+            }while(path.size() == 0);
+            for(Point tile : path){
+                this.move(tile);
+            }
         }
         else {
-			ArrayList<Point> path = aStarSearch();
+            AStarNode[][] grid = generateGraph();
+			ArrayList<Point> path = aStarSearch(grid);
             System.out.println(path);
             if(path.size() == 0) {
                 System.out.println("There is no valid path on the board.");
@@ -37,8 +46,7 @@ public class MyRobot extends Robot {
         super.addToWorld(world);
     }
 
-    public ArrayList<Point> aStarSearch(){
-        AStarNode[][] grid = generateGraph();
+    public ArrayList<Point> aStarSearch(AStarNode[][] grid){
         AStarNode start = grid[this.world.getStartPos().x][this.world.getStartPos().y];
         AStarNode end = grid[this.world.getEndPos().x][this.world.getEndPos().y];
         PriorityQueue<AStarNode> openSet = new PriorityQueue<AStarNode>();
@@ -105,10 +113,39 @@ public class MyRobot extends Robot {
         }else
             return null;
     }
+    private AStarNode[][] probGenGraph(){
+        if(this.world != null) {
+            int numCols = this.world.numCols();
+            int numRows = this.world.numRows();
+            Point goalPoint = this.world.getEndPos();
+            Point startPoint = this.world.getStartPos();
+            AStarNode[][] graph = new AStarNode[numRows][numCols];
+            for(int r = 0; r < numRows; r++){
+                for(int c = 0; c < numCols; c++){
+                    int numX = 0;
+                    int numO = 0;
+                    for(int i = 0; i < 100; i++){
+                        String res = pingMap(new Point(r,c));
+                        if(res.equals("X")) numX++;
+                        else if(res.equals("O")) numO++;
+                    }
+                    if(numX + numO == 100 && numX >= 50) graph[r][c] = new AStarNode(new Point(r,c), false); //If the tile is probably an X
+                    else{//If the tile is either the start or end tile or probably a valid O
+                        AStarNode anode = new AStarNode(new Point(r,c),true);
+                        anode.calculateHValue(goalPoint);
+                        if(anode.point.equals(startPoint)) anode.setGValue(0);
+                        graph[r][c] = anode;
+                    }
+                }
+            }
+            return graph;
+        }
+        return null;
+    }
 
     public static void main(String[] args) {
         try {
-			World myWorld = new World("TestCases/myInputFile4.txt", false);
+			World myWorld = new World("TestCases/myInputFile4.txt", true);
             MyRobot robot = new MyRobot();
             robot.addToWorld(myWorld);
 			myWorld.createGUI(400, 400, 200); // uncomment this and create a GUI; the last parameter is delay in msecs
