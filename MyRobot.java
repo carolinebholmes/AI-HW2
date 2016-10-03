@@ -13,22 +13,35 @@ public class MyRobot extends Robot {
     World world;
 	
     @Override
-    public void travelToDestination() {
+    public void travelToDestination(){
+        travelToDestination(this.world.getStartPos());
+    }
+
+    public void travelToDestination(Point start) {
         if (isUncertain) {
 			// call function to deal with uncertainty
             AStarNode[][] grid;
             ArrayList<Point> path;
             do {
                 grid = probGenGraph();
-                path = aStarSearch(grid);
+                path = aStarSearch(grid, start);
             }while(path.size() == 0);
             for(Point tile : path){
+                int x = this.getPosition().x;
+                int y = this.getPosition().y;
                 this.move(tile);
+                if(x == this.getPosition().x && y == this.getPosition().y){
+                    System.out.println("recalculating");
+                    System.out.println(x + ","+y);
+                    this.travelToDestination(new Point(x,y));
+                    break;
+                }
+
             }
         }
         else {
             AStarNode[][] grid = generateGraph();
-			ArrayList<Point> path = aStarSearch(grid);
+			ArrayList<Point> path = aStarSearch(grid, this.world.getStartPos());
             System.out.println(path);
             if(path.size() == 0) {
                 System.out.println("There is no valid path on the board.");
@@ -46,8 +59,8 @@ public class MyRobot extends Robot {
         super.addToWorld(world);
     }
 
-    public ArrayList<Point> aStarSearch(AStarNode[][] grid){
-        AStarNode start = grid[this.world.getStartPos().x][this.world.getStartPos().y];
+    public ArrayList<Point> aStarSearch(AStarNode[][] grid, Point startPoint){
+        AStarNode start = grid[startPoint.x][startPoint.y];
         AStarNode end = grid[this.world.getEndPos().x][this.world.getEndPos().y];
         PriorityQueue<AStarNode> openSet = new PriorityQueue<AStarNode>();
         Set<AStarNode> closedSet = new TreeSet<AStarNode>();
