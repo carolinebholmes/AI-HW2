@@ -9,6 +9,8 @@ import java.util.*;
 import java.util.regex.Pattern;
 
 public class MyRobot extends Robot {
+    public static int NUM_TESTS = 100; //number of times we will ping each tile every time we generate a representation of the grid
+
     boolean isUncertain;
     World world;
 	
@@ -131,18 +133,18 @@ public class MyRobot extends Robot {
             int numCols = this.world.numCols();
             int numRows = this.world.numRows();
             Point goalPoint = this.world.getEndPos();
-            Point startPoint = this.world.getStartPos();
+            Point startPoint = this.getPosition();
             AStarNode[][] graph = new AStarNode[numRows][numCols];
             for(int r = 0; r < numRows; r++){
                 for(int c = 0; c < numCols; c++){
                     int numX = 0;
                     int numO = 0;
-                    for(int i = 0; i < 100; i++){
+                    for(int i = 0; i < NUM_TESTS; i++){
                         String res = pingMap(new Point(r,c));
                         if(res.equals("X")) numX++;
                         else if(res.equals("O")) numO++;
                     }
-                    if(numX + numO == 100 && numX >= 50) graph[r][c] = new AStarNode(new Point(r,c), false); //If the tile is probably an X
+                    if(numX + numO == NUM_TESTS && numX >= (NUM_TESTS / 2)) graph[r][c] = new AStarNode(new Point(r,c), false); //If the tile is probably an X
                     else{//If the tile is either the start or end tile or probably a valid O
                         AStarNode anode = new AStarNode(new Point(r,c),true);
                         anode.calculateHValue(goalPoint);
