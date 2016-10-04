@@ -9,7 +9,9 @@ import java.util.*;
 import java.util.regex.Pattern;
 
 public class MyRobot extends Robot {
-    public static int NUM_TESTS = 100; //number of times we will ping each tile every time we generate a representation of the grid
+    public static boolean doTest = true;
+    public static int INITIAL_TESTS = 80;
+    public static double DECISION_THRESHOLD = 1; //in stdevs
 
     boolean isUncertain;
     World world;
@@ -32,9 +34,8 @@ public class MyRobot extends Robot {
                 int x = this.getPosition().x;
                 int y = this.getPosition().y;
                 this.move(tile);
-                if(x == this.getPosition().x && y == this.getPosition().y){
-                    System.out.println("recalculating");
-                    System.out.println(x + ","+y);
+                if(x == this.getPosition().x && y == this.getPosition().y){//a move was called and the robot didn't move, ie tried to move to a wall
+                    System.out.println("Invalid path, recalculating");
                     this.travelToDestination(new Point(x,y));
                     break;
                 }
@@ -139,12 +140,20 @@ public class MyRobot extends Robot {
                 for(int c = 0; c < numCols; c++){
                     int numX = 0;
                     int numO = 0;
-                    for(int i = 0; i < NUM_TESTS; i++){
+                    for(int i = 0; i < INITIAL_TESTS; i++){
                         String res = pingMap(new Point(r,c));
                         if(res.equals("X")) numX++;
                         else if(res.equals("O")) numO++;
                     }
-                    if(numX + numO == NUM_TESTS && numX >= (NUM_TESTS / 2)) graph[r][c] = new AStarNode(new Point(r,c), false); //If the tile is probably an X
+                    int numPings = INITIAL_TESTS;
+                    while(doTest && !decisionTest(numPings, numX, numO)){
+                        String res = pingMap(new Point(r,c));
+                        if(res.equals("X")) numX++;
+                        else if(res.equals("O")) numO++;
+                        numPings++;
+                    }
+                    System.out.println(numPings + " , "+numX);
+                    if(numX + numO == numPings && numX >= (numPings / 2)) graph[r][c] = new AStarNode(new Point(r,c), false); //If the tile is probably an X
                     else{//If the tile is either the start or end tile or probably a valid O
                         AStarNode anode = new AStarNode(new Point(r,c),true);
                         anode.calculateHValue(goalPoint);
@@ -156,6 +165,16 @@ public class MyRobot extends Robot {
             return graph;
         }
         return null;
+    }
+
+    public boolean decisionTest(double numPing, double numX, double numO){
+        if(numPing != numX + numO)
+            return true;
+        double stdev = Math.sqrt(numPing * .6 *.4);
+        if((numX <= (.4 * numPing) + DECISION_THRESHOLD*stdev) || (numX >= (.6 * numPing) - DECISION_THRESHOLD*stdev))
+            return true;
+        return false;
+
     }
 
     public static void main(String[] args) {
