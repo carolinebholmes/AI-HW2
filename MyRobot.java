@@ -10,8 +10,8 @@ import java.util.regex.Pattern;
 
 public class MyRobot extends Robot {
     public static boolean doTest = true;
-    public static int INITIAL_TESTS = 80;
-    public static double DECISION_THRESHOLD = 1; //in stdevs
+    public static int INITIAL_TESTS = 170;
+    public static double DECISION_THRESHOLD = 2.2; //in stdevs
 
     boolean isUncertain;
     World world;
@@ -153,7 +153,7 @@ public class MyRobot extends Robot {
                         numPings++;
                     }
                     System.out.println(numPings + " , "+numX);
-                    if(numX + numO == numPings && numX >= (numPings / 2)) graph[r][c] = new AStarNode(new Point(r,c), false); //If the tile is probably an X
+                    if(numX + numO == numPings && ((doTest && (numX >= (.6 * numPings) - DECISION_THRESHOLD*Math.sqrt(numPings * .6 *.4))) || (!doTest && (numX > numPings/2)))) graph[r][c] = new AStarNode(new Point(r,c), false); //If the tile is probably an X
                     else{//If the tile is either the start or end tile or probably a valid O
                         AStarNode anode = new AStarNode(new Point(r,c),true);
                         anode.calculateHValue(goalPoint);
@@ -167,11 +167,11 @@ public class MyRobot extends Robot {
         return null;
     }
 
-    public boolean decisionTest(double numPing, double numX, double numO){
-        if(numPing != numX + numO)
+    public boolean decisionTest(double numPings, double numX, double numO){
+        if(numPings != numX + numO)
             return true;
-        double stdev = Math.sqrt(numPing * .6 *.4);
-        if((numX <= (.4 * numPing) + DECISION_THRESHOLD*stdev) || (numX >= (.6 * numPing) - DECISION_THRESHOLD*stdev))
+        double stdev = Math.sqrt(numPings * .6 *.4);
+        if((numX <= (.4 * numPings) + DECISION_THRESHOLD*stdev) || (numX >= (.6 * numPings) - DECISION_THRESHOLD*stdev))
             return true;
         return false;
 
