@@ -1,0 +1,36 @@
+A heuristic is considered consistent if
+	h(G) = 0
+	h(N) <= c(N, P) + h(P)
+where
+	h - heuristic function
+	N - any node in the graph
+	P - a descendant of N
+	G - goal node
+	c(N, P) - cost of reaching P from N
+Our heuristic is the length of the minimal possible path to the goal from the node given that there are no obstables in the grid. 
+
+By definition,
+	h(G) = 0
+is satisfied, as the distance to the goal from itself must be zero.
+
+To show that 
+	h(N) <= c(N, P) + h(P)
+consider taking one step back from the goal node, G to show
+	h(A) <= c(A, G) + h(G)
+is sadisfied (where A is a node adjacent to and preceding G).
+Thus,
+	c(A, G) = 1
+	h(A) = 1
+	1 <= 1 + 0 
+and 
+	h(A) <= c(A, G) + h(G)
+is satisfied.
+
+Now consider any adjacent step back from a node P. Each time you consider a node earlier in the path, 
+	h(B) increases by 1
+	c(B, P) = 1
+where B is adjacent and preceding P.
+With these two facts, the inquality will always be balanced as considering any previous node will increase it's heuristic by one as well as its distance. This step can be repeatedly applied to consider any path between an arbirtary node N and any decendent P, showing that
+	h(N) <= c(N, P) + h(P)
+holds and the heuristic is consistent. 
+
