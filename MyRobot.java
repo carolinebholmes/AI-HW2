@@ -46,7 +46,6 @@ public class MyRobot extends Robot {
         else {
             AStarNode[][] grid = generateGraph();
 			ArrayList<Point> path = aStarSearch(grid, this.world.getStartPos());
-            System.out.println(path);
             if(path.size() == 0) {
                 System.out.println("There is no valid path on the board.");
             }
@@ -84,7 +83,6 @@ public class MyRobot extends Robot {
                     else
                         continue;
                 }
-                System.out.println(neighborG);
                 if(!openSet.contains(neighbor))
                     openSet.add(neighbor);
                 else if(neighborG >= neighbor.gValue)
@@ -156,7 +154,6 @@ public class MyRobot extends Robot {
                         else if(res.equals("O")) numO++;
                         numPings++;
                     }
-                    System.out.println(numPings + " , "+numX);
                     if(numX + numO == numPings && ((doTest && (numX >= (.6 * numPings) - DECISION_THRESHOLD*Math.sqrt(numPings * .6 *.4))) || (!doTest && (numX > numPings/2)))) graph[r][c] = new AStarNode(new Point(r,c), false); //If the tile is probably an X
                     else{//If the tile is either the start or end tile or probably a valid O
                         AStarNode anode = new AStarNode(new Point(r,c),true);
