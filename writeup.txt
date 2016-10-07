@@ -1,7 +1,5 @@
 For our pathfinding algorithm under certainty is the A* algorithm using the length of the minimal possible path given no obstables as our heuristic. A* is a variation of Dijkstra's, so it guaranteed to find the shortest path given that the heuristic is consistent. It can better performance than Dijkstra's, as the heuristic allows it to prioritize paths that are more likely to be the shortest. 
 
-
-What kinds of data sets are more ineffcient? Why?
-
+The data sets that have more impediments farther away from the start and closer to the goal are more likely to be ineffcient(especially dense impediments), because it is more likely to have to backtrack much farther to get a new path and start over. It is also more likely to misidentify a square in the uncertain grids, as the probability of getting a correct read at the beginning is less likely the closer you are to the goal.
 
 To deal with uncertainty, we ping all the spots on the board a base number of times, and then from there we look at which squares we are not certain enough about. We definte a decision threshold to decide how confident we want to be, at the tradeoff of increasing the number of pings with an increase in confidence. We assign everything we are confident enough about after the initial threshold, and then continue to test the remaining grid spots. 
