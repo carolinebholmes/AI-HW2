@@ -21,7 +21,9 @@ public class AStarNode implements Comparable<AStarNode>{
     }
 
     public void calculateHValue(Point goalPoint) {
-        this.hValue = (Math.abs(point.x - goalPoint.x) + Math.abs(point.y - goalPoint.y));
+        //(int)Math.floor(Math.sqrt(Math.pow(Math.abs(point.x - goalPoint.x),2) + Math.pow(Math.abs(point.y - goalPoint.y),2))); floor of pythagorean
+        //(Math.abs(point.x - goalPoint.x) + Math.abs(point.y - goalPoint.y));  //old way
+        this.hValue = Math.max(Math.abs(point.x - goalPoint.x), Math.abs(point.y - goalPoint.y)); //the only consistent one among them
     }
 
     public void calculateGValue(AStarNode point) {//change this hardcore

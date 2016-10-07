@@ -9,9 +9,10 @@ import java.util.*;
 import java.util.regex.Pattern;
 
 public class MyRobot extends Robot {
-    public static boolean doTest = true;
-    public static int INITIAL_TESTS = 170;
-    public static double DECISION_THRESHOLD = 2.2; //in stdevs
+    public static boolean uncertainty = false;
+    public static boolean doTest = true; //even if true, only tests further under uncertain conditions
+    public static int INITIAL_TESTS = 160;
+    public static double DECISION_THRESHOLD = 1.9; //in stdevs     150 and 2.5 are the lower limit, don't do it
 
     boolean isUncertain;
     World world;
@@ -76,19 +77,22 @@ public class MyRobot extends Robot {
             closedSet.add(current);
             ArrayList<AStarNode> neighbors = current.getNeighbors(grid);
             for (AStarNode neighbor : neighbors) {
-                if (closedSet.contains(neighbor)) {
-                    continue;
-                }
                 int neighborG = current.gValue + 1;
+                if (closedSet.contains(neighbor)) {
+                    if(neighborG < neighbor.gValue)
+                        closedSet.remove(neighbor);
+                    else
+                        continue;
+                }
+                System.out.println(neighborG);
                 if(!openSet.contains(neighbor))
                     openSet.add(neighbor);
                 else if(neighborG >= neighbor.gValue)
                     continue;
-                //if at this point, this path is the best until now
+                //if at this point, this path is the best or equal to the best path discovered so far
                 neighbor.prevNode = current;
                 neighbor.gValue = neighborG;
             }
-
         }
         return new ArrayList<Point>();
     }
@@ -105,7 +109,7 @@ public class MyRobot extends Robot {
         while(!rstack.empty()){
             path.add(rstack.pop().point);
         }
-        path.remove(0);
+        path.remove(0); //don't want starting block in path apparenntly
         return path;
     }
 
@@ -179,7 +183,7 @@ public class MyRobot extends Robot {
 
     public static void main(String[] args) {
         try {
-			World myWorld = new World("TestCases/myInputFile4.txt", true);
+			World myWorld = new World("TestCases/myInputFile4.txt", uncertainty);
             MyRobot robot = new MyRobot();
             robot.addToWorld(myWorld);
 			myWorld.createGUI(400, 400, 200); // uncomment this and create a GUI; the last parameter is delay in msecs
